@@ -504,28 +504,31 @@ describe('Crate', () => {
     const file = path.resolve(path.join(__dirname, '.', 'fixtures', 'node_js_logo.png'))
 
     var fileProcessor = {
-      createFieldSchema: sinon.stub(),
-      willOverwrite: sinon.stub(),
-      shouldRemove: sinon.stub(),
-      remove: sinon.stub()
+        createFieldSchema:  sinon.stub()
+      , willOverwrite:      sinon.stub()
+      , shouldRemove:       sinon.stub()
+      , remove:             sinon.stub()
     }
-    fileProcessor.createFieldSchema.returns({
-      foo: {},
-      bar: {}
-    })
-    fileProcessor.process = (attachment, storageProvider, model, callback) => {
-      storageProvider.save(attachment, (error, url) => {
-        ['foo', 'bar'].forEach((property) => {
-          model[property] = {
-            size: attachment.size,
-            name: attachment.name,
-            type: attachment.type,
-            url: url
-          }
-        })
 
-        callback(error)
-      })
+    fileProcessor.createFieldSchema.returns({
+        foo: {}
+      , bar: {}
+    })
+
+    fileProcessor.process = (attachment, storageProvider, model, callback) => {
+        storageProvider.save(attachment, (error, url, path) => {
+            ['foo', 'bar'].forEach((property) => {
+                model[property] = {
+                    size:   attachment.size
+                  , name:   attachment.name
+                  , type:   attachment.type
+                  , url:    url
+                  , path:   path
+                }
+            })
+
+            callback(error)
+        })
     }
     fileProcessor.shouldRemove.returns(true)
     fileProcessor.remove.callsArg(2)

@@ -1,35 +1,39 @@
 'use strict'
 
 class StubFileProcessor {
-  createFieldSchema () {
-    return {
-      size: Number,
-      name: String,
-      type: {
-        type: String
-      },
-      url: String
+    createFieldSchema () {
+        return {
+            size:   Number
+          , name:   String
+          , type: {
+                type: String
+            }
+          , url:    String
+          , path:   String
+          , link:   String
+        }
     }
-  }
 
-  process (attachment, storageProvider, model, callback) {
-    storageProvider.save(attachment, (error, url) => {
-      model.size = attachment.size
-      model.name = attachment.name
-      model.type = attachment.type
-      model.url = url
+    process (attachment, storageProvider, model, callback) {
+        storageProvider.save(attachment, (error, url, path) => {
+            model.size    =   attachment.size
+            model.name    =   attachment.name
+            model.type    =   attachment.type
+            model.url     =   url
+            model.path    =   path
+            model.link    =   url
 
-      callback(error)
-    })
-  }
+            callback(error);
+        })
+    }
 
-  willOverwrite (model) {
-    return !!model.url
-  }
+    willOverwrite (model) {
+        return !!model.url
+    }
 
-  remove (storageProvider, model, callback) {
-    storageProvider.remove(model, callback)
-  }
+    remove (storageProvider, model, callback) {
+        storageProvider.remove(model, callback)
+    }
 }
 
 module.exports = StubFileProcessor
