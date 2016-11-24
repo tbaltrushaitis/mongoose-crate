@@ -1,0 +1,3 @@
+[submodule "mongoose-crate"]
+	path = mongoose-crate
+	url = https://github.com/tbaltrushaitis/mongoose-crate
